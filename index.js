@@ -5,6 +5,7 @@ import { Buffer } from 'node:buffer';
 import createUser from './src/createUser.js'
 import dataParsing from './src/dataParsing.js'
 import createRoom from "./src/createRoom.js";
+import startGame from "./src/startGame.js";
 
 const HTTP_PORT = 8181;
 
@@ -23,7 +24,10 @@ wss.on('connection', function(ws) {
         dataParsing(message, ws, wss)
 
         wss.clients.forEach(function each(client) {
-            console.log('start', wss.isStart)
+            if(wss.isStart === 2){
+                // wss.isStart = 0
+                startGame(client)
+            }
             if(client.user && client.user.name && client.id !== ws.id && !client.isCreateRoom){
                 client.isCreateRoom = true
                 createRoom(client)
@@ -33,11 +37,3 @@ wss.on('connection', function(ws) {
     })
 
 });
-
-wss.clients.forEach(function each(client) {
-    console.log(client.user)
-});
-
-wss.on('upgrade', (res)=> {
-    console.log(res)
-})
