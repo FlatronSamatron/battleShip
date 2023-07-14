@@ -1,12 +1,15 @@
 const createGame = (ws, wss) => {
 
     const room =  {
-        type: "update_room",
-        data: JSON.stringify([{roomId:0,roomUsers:[{name:ws.user.name,index:ws.id}]}]),
+        type: "create_game",
+        data: JSON.stringify({idGame: 0, idPlayer: ws.id}),
         id: 0,
     }
 
     ws.send(JSON.stringify(room))
+
+    ws.isCreateGame = true
+    wss.isCreateGame = !wss.isCreateGame
 }
 
 export default createGame

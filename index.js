@@ -6,6 +6,7 @@ import createUser from './src/createUser.js'
 import dataParsing from './src/dataParsing.js'
 import createRoom from "./src/createRoom.js";
 import startGame from "./src/startGame.js";
+import createGame from "./src/createGame.js";
 
 const HTTP_PORT = 8181;
 
@@ -19,18 +20,20 @@ wss.on('connection', function(ws) {
     ws.id = new Date().getTime() + Math.round(Math.random()*100)
 
     wss.isStart = 0
+    wss.usersInfo = []
 
     ws.on('message', (message)=> {
         dataParsing(message, ws, wss)
 
         wss.clients.forEach(function each(client) {
             if(wss.isStart === 2){
-                // wss.isStart = 0
-                startGame(client)
+                startGame(client, wss)
             }
-            if(client.user && client.user.name && client.id !== ws.id && !client.isCreateRoom){
-                client.isCreateRoom = true
-                createRoom(client)
+            if(wss.isCreateRoom && !client.isCreateRoom){
+                createRoom(client, wss)
+            }
+            if(wss.isCreateGame && !client.isCreateGame){
+                createGame(client, wss)
             }
         });
 

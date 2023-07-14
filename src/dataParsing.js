@@ -3,6 +3,7 @@ import createUser from "./createUser.js";
 import createRoom from "./createRoom.js";
 import createGame from "./createGame.js";
 import addShips from "./addShips.js";
+import createAttack from "./createAttack.js";
 
 const dataParsing = (message, ws, wss) => {
     const allData = JSON.parse(Buffer.from(message, 'utf-8').toString())
@@ -24,6 +25,10 @@ const dataParsing = (message, ws, wss) => {
 
     if(type === 'add_ships'){
         addShips(ws, wss, data)
+    }
+
+    if(type === 'randomAttack' || type === 'attack'){
+        createAttack(ws, wss, data, type)
     }
 }
 
